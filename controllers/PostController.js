@@ -1,10 +1,42 @@
 import Post from "../models/Post.js"
 
+function unique(arr) {
+    let result = [];
+  
+    for (let str of arr) {
+      if (!result.includes(str)) {
+        result.push(str);
+      }
+    }
+  
+    return result;
+  }
+
 export const getAll = async (req, res) => {
     try {
         const posts = await Post.find().populate('user').exec();
 
         res.json(posts);
+    } catch(err) {
+        console.log(err);
+        res.status(500).json({
+            message: "Error getting posts",
+        })
+    }
+}
+
+export const getLastTags = async (req, res) => {
+    try {
+        const posts = await Post.find().limit(5).exec();
+
+        const tags = unique(posts
+        .map(obj => obj.tags)
+        .flat())
+        .slice(0, 5);
+
+        console.log(tags);
+
+        res.json(tags);
     } catch(err) {
         console.log(err);
         res.status(500).json({
@@ -41,7 +73,7 @@ export const getOne = async (req, res) => {
 
             res.json(doc);
         }
-        )
+        ).populate('user');
 
     } catch(err) {
         console.log(err);
@@ -87,15 +119,17 @@ export const remove = async (req, res) => {
 
 export const create = async (req, res) => {
     try {
+        console.log(req.body);
         const doc = new Post({
             title: req.body.title,
             text: req.body.text,
             tags: req.body.tags,
-            imageUrl: req.body.imageUrl,
             user: req.userId,
+            imageURL: req.body.imageURL,
         });
+        console.log(doc);
         const post = await doc.save();
-
+        console.log(post);
         res.json(post);
     } catch(err) {
         console.log(err);
@@ -116,7 +150,7 @@ export const update = async(req, res) => {
             title: req.body.title,
             text: req.body.text,
             tags: req.body.tags,
-            imageUrl: req.body.imageUrl,
+            imageURL: req.body.imageURL,
             user: req.userId,
         },);
         res.json({
