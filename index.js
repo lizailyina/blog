@@ -9,7 +9,7 @@ import { registerValidation, postCreateValidation } from "./validations.js";
 import { PostController, UserController } from './controllers/index.js'
 import { handleValidationErrors, checkAuth} from './utils/index.js';
 
-mongoose.connect(process.env.MOGODB_URI)
+mongoose.connect(process.env.MONGODB_URI)
     .then(() => console.log('DB OK'))
     .catch((err) => console.log('DB error', err));
 
