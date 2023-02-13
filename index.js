@@ -9,7 +9,7 @@ import { registerValidation, postCreateValidation } from "./validations.js";
 import { PostController, UserController } from './controllers/index.js'
 import { handleValidationErrors, checkAuth} from './utils/index.js';
 
-mongoose.connect('mongodb+srv://admin:wwwwww@cluster0.r9menhe.mongodb.net/blog?retryWrites=true&w=majority')
+mongoose.connect(process.env.MOGODB_URI)
     .then(() => console.log('DB OK'))
     .catch((err) => console.log('DB error', err));
 
@@ -50,7 +50,7 @@ app.delete('/post/:id', checkAuth, PostController.remove);
 app.patch('/post/:id', checkAuth, postCreateValidation, handleValidationErrors, PostController.update);
 
 
-app.listen(4444, (err) => {
+app.listen(process.env.PORT || 4444, (err) => {
     if (err) {
         return console.log(err);
     }
